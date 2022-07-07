@@ -4,6 +4,7 @@ namespace App\Http\Controllers\API;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
+use Illuminate\Http\Response;
 use App\Models\Project;
 
 class ProjectController extends Controller
@@ -12,9 +13,15 @@ class ProjectController extends Controller
         $this->project = new Project();
     }
 
-    public function allList()
+    public function allList(Request $request)
     {
-        return $this->project::all();
+        $data = $this->project::where('name', 'like', '%' . $request['q'] . '%')->paginate($request['pageSize'], ['*'], 'page', $request['pageIndex']);
+        if ($request['sortDirection'] == 'ASC') {
+            $data = $data->sortBy($request['sortBy']);
+        } else {
+            $data = $data->sortByDesc($request['sortBy']);
+        }
+        return $data;
     }
 
     public function list($id)

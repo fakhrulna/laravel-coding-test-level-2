@@ -18,6 +18,10 @@ class PermissionMiddleware
      */
     public function handle(Request $request, Closure $next, $action)
     {
+        $checkuser = User::all()->count();
+        if ($checkuser == 0) {
+            return $next($request);
+        }
         $id = $request['action_by'];
         $checkRole = User::find($id);
         $role = $checkRole->role;

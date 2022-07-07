@@ -28,6 +28,7 @@ class UserController extends Controller
             'name' => $request['name'],
             'username' => $request['username'],
             'password' => password_hash($request['password'], PASSWORD_DEFAULT),
+            'role' => $request['role'],
         ]);
     }
 
