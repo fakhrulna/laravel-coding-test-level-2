@@ -18,12 +18,12 @@ use App\Http\Controllers\Api\ProjectController;
 */
 
 Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
-    return $request->user();
+    return $request->user(); 
 });
 
 Route::prefix('/v1')->group(function () {
 
-    Route::prefix('/user')->group(function () {
+    Route::middleware('permission:user')->prefix('/user')->group(function () {
         Route::get('/lists', [UserController::class, 'allList']);
         Route::get('/list/{user_id}', [UserController::class, 'list']);
         Route::post('/create', [UserController::class, 'create']);
@@ -35,18 +35,18 @@ Route::prefix('/v1')->group(function () {
     Route::prefix('/task')->group(function () {
         Route::get('/lists', [TaskController::class, 'allList']);
         Route::get('/list/{task_id}', [TaskController::class, 'list']);
-        Route::post('/create', [TaskController::class, 'create']);
+        Route::post('/create', [TaskController::class, 'create'])->middleware('permission:task');
         Route::put('/updateIdempotent/{task_id}', [TaskController::class, 'updateIdempotent']);
         Route::patch('/update/{task_id}', [TaskController::class, 'update']);
-        Route::delete('/delete/{task_id}', [TaskController::class, 'delete']);
+        Route::delete('/delete/{task_id}', [TaskController::class, 'delete'])->middleware('permission:task');
     });
 
     Route::prefix('/project')->group(function () {
         Route::get('/lists', [ProjectController::class, 'allList']);
         Route::get('/list/{project_id}', [ProjectController::class, 'list']);
-        Route::post('/create', [ProjectController::class, 'create']);
-        Route::put('/updateIdempotent/{project_id}', [ProjectController::class, 'updateIdempotent']);
-        Route::patch('/update/{project_id}', [ProjectController::class, 'update']);
-        Route::delete('/delete/{project_id}', [ProjectController::class, 'delete']);
+        Route::post('/create', [ProjectController::class, 'create'])->middleware('permission:project');
+        Route::put('/updateIdempotent/{project_id}', [ProjectController::class, 'updateIdempotent'])->middleware('permission:project');
+        Route::patch('/update/{project_id}', [ProjectController::class, 'update'])->middleware('permission:project');
+        Route::delete('/delete/{project_id}', [ProjectController::class, 'delete'])->middleware('permission:project');
     });
 });
